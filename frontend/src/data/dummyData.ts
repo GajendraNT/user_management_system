@@ -1,0 +1,32 @@
+export const employees = [
+  {
+    id: 1,
+    first_name: "Gajendra",
+    last_name: "Sahu",
+    email: "gajendra@mail.com",
+    phone: "9876543210",
+    address: "Raipur, India",
+    blood_group: "O+",
+    role: "employee",
+  },
+  {
+    id: 2,
+    first_name: "Aryan",
+    last_name: "Verma",
+    email: "aryan@mail.com",
+    phone: "8765432109",
+    address: "Durg, India",
+    blood_group: "A+",
+    role: "employee",
+  },
+  {
+    id: 3,
+    first_name: "Admin",
+    last_name: "User 2",
+    email: "admin2@mail.com",
+    phone: "-",
+    address: "-",
+    blood_group: "-",
+    role: "admin",
+  },
+];
