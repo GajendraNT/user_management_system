@@ -6,11 +6,11 @@ import FilterBar from "../components/FilterBar";
 import AddEmployeeModal from "../components/EmployeeModals/AddEmployeeModal";
 import DeleteEmployeeModal from "../components/EmployeeModals/DeleteEmployeeModal";
 import EmployeeDetailModal from "../components/EmployeeModals/EmployeeDetailModal";
-import { addEmployee } from "../services/admin";
+import { addEmployee, getEmployees, deleteEmployee } from "../services/admin";
 
 export default function AdminDashboard() {
   const [employees, setEmployees] = useState<Employee[]>([]);
-  const [filteredEmployees, setFilteredEmployees] = useState<Employee[]>([]);
+  const [bloodGroupFilter, setBloodGroupFilter] = useState("all");
   const [newEmployee, setNewEmployee] = useState({
     first_name: "",
     last_name: "",
@@ -19,67 +19,85 @@ export default function AdminDashboard() {
   });
 
   const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(true);
+  const [deleting, setDeleting] = useState(false);
+  const [totalCount, setTotalCount] = useState(0);
+
+  const [page, setPage] = useState(1);
+  const [limit] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOption, setSortOption] = useState<SortOption>("name_asc");
-  const [bloodGroupFilter, setBloodGroupFilter] = useState("all");
 
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(
+    null
+  );
 
   const handleLogout = () => {
     localStorage.removeItem("access_token");
     window.location.href = "/login";
   };
 
-  // debounce search/filter/sort
+  const fetchEmployees = async () => {
+    setFetching(true);
+    try {
+      const [sort_by, sort_order] =
+        sortOption === "name_asc"
+          ? ["first_name", "asc"]
+          : sortOption === "name_desc"
+          ? ["first_name", "desc"]
+          : sortOption === "email_asc"
+          ? ["email", "asc"]
+          : ["email", "desc"];
+
+      const { employees, total_count } = await getEmployees(
+        page,
+        limit,
+        searchTerm,
+        sort_by,
+        sort_order,
+        bloodGroupFilter // 👈 send filter
+      );
+
+      setEmployees(employees);
+      setTotalCount(total_count);
+
+      if (employees.length === 0 && page > 1 && total_count > 0) {
+        setPage((p) => Math.max(1, p - 1));
+      }
+    } catch (err) {
+      console.error("Failed to fetch employees:", err);
+      alert("Failed to load employees. Please try again.");
+    } finally {
+      setFetching(false);
+    }
+  };
+
+  // Fetch whenever dependencies change
   useEffect(() => {
-    const timer = setTimeout(() => {
-      let results = employees.filter((e) => e.role === "employee");
+    const delay = setTimeout(() => {
+      fetchEmployees();
+    }, 500); // debounce search
+    return () => clearTimeout(delay);
+  }, [page, searchTerm, sortOption]);
 
-      if (searchTerm.trim() !== "") {
-        const lower = searchTerm.toLowerCase();
-        results = results.filter(
-          (emp) =>
-            emp.first_name.toLowerCase().includes(lower) ||
-            emp.last_name.toLowerCase().includes(lower) ||
-            emp.email.toLowerCase().includes(lower) ||
-            (emp.blood_group && emp.blood_group.toLowerCase().includes(lower))
-        );
-      }
-
-      if (bloodGroupFilter !== "all") {
-        results = results.filter(
-          (emp) =>
-            emp.blood_group?.toLowerCase() === bloodGroupFilter.toLowerCase()
-        );
-      }
-
-      results = results.sort((a, b) => {
-        switch (sortOption) {
-          case "name_asc":
-            return a.first_name.localeCompare(b.first_name);
-          case "name_desc":
-            return b.first_name.localeCompare(a.first_name);
-          case "email_asc":
-            return a.email.localeCompare(b.email);
-          case "email_desc":
-            return b.email.localeCompare(a.email);
-          case "blood_asc":
-            return (a.blood_group || "").localeCompare(b.blood_group || "");
-          case "blood_desc":
-            return (b.blood_group || "").localeCompare(a.blood_group || "");
-          default:
-            return 0;
-        }
-      });
-
-      setFilteredEmployees(results);
-    }, 400);
-
-    return () => clearTimeout(timer);
-  }, [employees, searchTerm, sortOption, bloodGroupFilter]);
+  // Delete Employee
+  const handleDeleteEmployee = async () => {
+    if (!selectedEmployee) return;
+    setDeleting(true);
+    try {
+      await deleteEmployee(selectedEmployee.id);
+      alert(`${selectedEmployee.first_name} deleted successfully.`);
+      fetchEmployees(); // refresh list
+      setIsDeleteOpen(false);
+    } catch {
+      alert("Failed to delete employee.");
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   const handleAddEmployee = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,29 +116,24 @@ export default function AdminDashboard() {
 
     try {
       const payload = {
-        first_name: newEmployee.first_name,
-        last_name: newEmployee.last_name,
-        email: newEmployee.email,
-        password: newEmployee.password,
+        ...newEmployee,
         confirm_password: newEmployee.password,
       };
 
       const createdEmp = await addEmployee(payload);
+      alert(
+        `Employee ${createdEmp.first_name} ${createdEmp.last_name} added successfully!`
+      );
 
-      setEmployees((prev) => [
-        ...prev,
-        {
-          id: createdEmp.id,
-          first_name: createdEmp.first_name,
-          last_name: createdEmp.last_name,
-          email: createdEmp.email,
-          role: createdEmp.role,
-        },
-      ]);
+      fetchEmployees();
 
-      alert(`Employee ${createdEmp.first_name} ${createdEmp.last_name} added successfully!`);
-      setIsAddOpen(false);
-      setNewEmployee({ first_name: "", last_name: "", email: "", password: "" });
+      // setIsAddOpen(false);
+      // setNewEmployee({
+      //   first_name: "",
+      //   last_name: "",
+      //   email: "",
+      //   password: "",
+      // });
     } catch (err: any) {
       console.error("Add employee failed:", err);
       const msg =
@@ -133,11 +146,16 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleBloodGroupChange = (value: string) => {
+    setBloodGroupFilter(value);
+    setPage(1); // reset to first page whenever filter changes
+  };
+
   return (
     <div className="p-6 sm:p-8 min-h-screen bg-linear-to-b from-blue-50 to-white">
       <Header
         title="Admin Dashboard"
-        subtitle="Manage, search, filter, and sort employees."
+        subtitle="Manage, search, and paginate employees."
         onAdd={() => setIsAddOpen(true)}
         onLogout={handleLogout}
       />
@@ -148,40 +166,34 @@ export default function AdminDashboard() {
         sortOption={sortOption}
         onSortChange={setSortOption}
         bloodGroupFilter={bloodGroupFilter}
-        onBloodGroupChange={setBloodGroupFilter}
+        onBloodGroupChange={handleBloodGroupChange}
       />
 
-      {/* Employee Table */}
+      {/* Table */}
       <div className="overflow-x-auto bg-white rounded-2xl shadow-md">
-        <table className="min-w-full text-left border-collapse">
-          <thead className="bg-blue-100 text-gray-700">
-            <tr>
-              <th className="p-3 border-b">Name</th>
-              <th className="p-3 border-b">Email</th>
-              <th className="p-3 border-b text-center">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredEmployees.length > 0 ? (
-              filteredEmployees.map((emp) => (
-                <tr
-                  key={emp.email}
-                  className="hover:bg-blue-50 cursor-pointer"
-                  onClick={() => {
-                    setSelectedEmployee(emp);
-                    setIsDetailOpen(true);
-                  }}
-                >
-                  <td className="p-3 border-b font-medium text-gray-800">
+        {fetching ? (
+          <div className="p-6 text-center text-gray-500">
+            Loading employees...
+          </div>
+        ) : employees.length > 0 ? (
+          <table className="min-w-full text-left border-collapse">
+            <thead className="bg-blue-100 text-gray-700">
+              <tr>
+                <th className="p-3 border-b">Name</th>
+                <th className="p-3 border-b">Email</th>
+                <th className="p-3 border-b text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {employees.map((emp) => (
+                <tr key={emp.id} className="hover:bg-blue-50">
+                  <td className="p-3 border-b">
                     {emp.first_name} {emp.last_name}
                   </td>
                   <td className="p-3 border-b">{emp.email}</td>
-                  <td
-                    className="p-3 border-b text-center"
-                    onClick={(e) => e.stopPropagation()}
-                  >
+                  <td className="p-3 border-b text-center">
                     <button
-                      className="text-red-600 hover:text-red-800 font-medium transition"
+                      className="text-red-600 hover:text-red-800"
                       onClick={() => {
                         setSelectedEmployee(emp);
                         setIsDeleteOpen(true);
@@ -191,17 +203,44 @@ export default function AdminDashboard() {
                     </button>
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={3} className="text-center text-gray-500 py-6">
-                  No employees match your criteria.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <div className="p-6 text-center text-gray-500">
+            No employees found.
+          </div>
+        )}
       </div>
+
+      {/* Pagination */}
+      {totalCount > 0 && (
+        <div className="flex justify-center items-center mt-6 gap-4">
+          <button
+            className="px-3 py-1 border rounded disabled:opacity-50"
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={page === 1 || fetching}
+          >
+            Prev
+          </button>
+
+          <span className="text-gray-600">
+            Page {page} of {Math.max(1, Math.ceil(totalCount / limit))}
+          </span>
+
+          <button
+            className="px-3 py-1 border rounded disabled:opacity-50"
+            onClick={() => setPage((p) => p + 1)}
+            disabled={
+              page >= Math.ceil(totalCount / limit) ||
+              fetching ||
+              employees.length === 0
+            }
+          >
+            Next
+          </button>
+        </div>
+      )}
 
       {/* Modals */}
       <AddEmployeeModal
@@ -218,14 +257,14 @@ export default function AdminDashboard() {
         onClose={() => setIsDetailOpen(false)}
         employee={selectedEmployee}
       />
-
       <DeleteEmployeeModal
         isOpen={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}
-        onConfirm={() => {}}
+        onConfirm={handleDeleteEmployee}
         employeeName={`${selectedEmployee?.first_name || ""} ${
           selectedEmployee?.last_name || ""
         }`}
+        deleting={deleting}
       />
     </div>
   );
