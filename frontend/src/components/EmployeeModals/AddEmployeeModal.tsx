@@ -9,6 +9,7 @@ interface AddEmployeeModalProps {
   newEmployee: any;
   setNewEmployee: (data: any) => void;
   loading: boolean;
+  error?: string;
 }
 
 const newEmpInput = [

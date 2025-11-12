@@ -58,7 +58,7 @@ export default function AdminDashboard() {
         searchTerm,
         sort_by,
         sort_order,
-        bloodGroupFilter // 👈 send filter
+        bloodGroupFilter
       );
 
       setEmployees(employees);
@@ -75,22 +75,20 @@ export default function AdminDashboard() {
     }
   };
 
-  // Fetch whenever dependencies change
   useEffect(() => {
     const delay = setTimeout(() => {
       fetchEmployees();
-    }, 500); // debounce search
+    }, 500); 
     return () => clearTimeout(delay);
   }, [page, searchTerm, sortOption]);
 
-  // Delete Employee
   const handleDeleteEmployee = async () => {
     if (!selectedEmployee) return;
     setDeleting(true);
     try {
       await deleteEmployee(selectedEmployee.id);
       alert(`${selectedEmployee.first_name} deleted successfully.`);
-      fetchEmployees(); // refresh list
+      fetchEmployees();
       setIsDeleteOpen(false);
     } catch {
       alert("Failed to delete employee.");
@@ -127,20 +125,28 @@ export default function AdminDashboard() {
 
       fetchEmployees();
 
-      // setIsAddOpen(false);
-      // setNewEmployee({
-      //   first_name: "",
-      //   last_name: "",
-      //   email: "",
-      //   password: "",
-      // });
+      setIsAddOpen(false);
+      setNewEmployee({
+        first_name: "",
+        last_name: "",
+        email: "",
+        password: "",
+      });
     } catch (err: any) {
       console.error("Add employee failed:", err);
+
       const msg =
         err.response?.data?.detail ||
         err.message ||
         "Failed to add employee. Please try again.";
-      alert(msg);
+
+      if (msg.toLowerCase().includes("email")) {
+        alert(
+          "This email is already registered. Please use a different email."
+        );
+      } else {
+        alert(msg);
+      }
     } finally {
       setLoading(false);
     }
@@ -148,7 +154,7 @@ export default function AdminDashboard() {
 
   const handleBloodGroupChange = (value: string) => {
     setBloodGroupFilter(value);
-    setPage(1); // reset to first page whenever filter changes
+    setPage(1);
   };
 
   return (
@@ -257,6 +263,7 @@ export default function AdminDashboard() {
         onClose={() => setIsDetailOpen(false)}
         employee={selectedEmployee}
       />
+
       <DeleteEmployeeModal
         isOpen={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}
