@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Button from "../components/Button";
@@ -20,6 +20,17 @@ export default function LoginPage() {
       setError("Invalid credentials");
     }
   };
+
+  useEffect(() => {
+    document.title = "Login - User Management System";
+  },[]);
+
+  useEffect(() => {
+    const token = localStorage.getItem("access_token");
+    if (token) {
+      navigate("/dashboard");
+    }
+  },[]);
 
   return (
     <div className="flex items-center justify-center h-screen bg-gradient-to-br from-blue-50 to-white">

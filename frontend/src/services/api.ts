@@ -1,4 +1,3 @@
-// src/services/api.ts
 import axios from "axios";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
@@ -10,7 +9,6 @@ const api = axios.create({
   },
 });
 
-// Add JWT token automatically if available
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("access_token");
   if (token) {

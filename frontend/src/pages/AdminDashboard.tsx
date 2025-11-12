@@ -22,7 +22,7 @@ export default function AdminDashboard() {
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
+    localStorage.removeItem("access_token");
     window.location.href = "/login";
   };
 

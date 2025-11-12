@@ -7,11 +7,11 @@ interface LoginPayload {
 }
 
 export const login = async (payload: LoginPayload) => {
-  const { data } = await api.post("/login", payload);
+  const { data } = await api.post("/auth/login", payload);
   return data;
 };
 
 export const getCurrentUser = async () => {
-  const { data } = await api.get("/users/me");
+  const { data } = await api.get("/auth/users/me",);
   return data;
 };
