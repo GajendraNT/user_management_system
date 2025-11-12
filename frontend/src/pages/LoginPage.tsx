@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import Button from "../components/Button";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -65,9 +66,9 @@ export default function LoginPage() {
 
           {error && <p className="text-red-500 text-sm text-center">{error}</p>}
 
-          <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-300 px-4 py-2 rounded-lg font-semibold transition focus:outline-none focus:ring-2">
+          <Button type="submit" className="w-full">
             Login
-          </button>
+          </Button>
         </form>
       </div>
     </div>

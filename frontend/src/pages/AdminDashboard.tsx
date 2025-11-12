@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { employees as dummyEmployees } from "../data/dummyData";
 import type { Employee, SortOption } from "../types";
 
 import Header from "../components/Header";
@@ -7,11 +6,19 @@ import FilterBar from "../components/FilterBar";
 import AddEmployeeModal from "../components/EmployeeModals/AddEmployeeModal";
 import DeleteEmployeeModal from "../components/EmployeeModals/DeleteEmployeeModal";
 import EmployeeDetailModal from "../components/EmployeeModals/EmployeeDetailModal";
+import { addEmployee } from "../services/admin";
 
 export default function AdminDashboard() {
-  const [employees, setEmployees] = useState<Employee[]>(dummyEmployees);
-  const [filteredEmployees, setFilteredEmployees] = useState<Employee[]>(dummyEmployees);
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [filteredEmployees, setFilteredEmployees] = useState<Employee[]>([]);
+  const [newEmployee, setNewEmployee] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    password: "",
+  });
 
+  const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOption, setSortOption] = useState<SortOption>("name_asc");
   const [bloodGroupFilter, setBloodGroupFilter] = useState("all");
@@ -26,11 +33,11 @@ export default function AdminDashboard() {
     window.location.href = "/login";
   };
 
+  // debounce search/filter/sort
   useEffect(() => {
     const timer = setTimeout(() => {
       let results = employees.filter((e) => e.role === "employee");
 
-      // Search
       if (searchTerm.trim() !== "") {
         const lower = searchTerm.toLowerCase();
         results = results.filter(
@@ -42,7 +49,6 @@ export default function AdminDashboard() {
         );
       }
 
-      // Filter by blood group
       if (bloodGroupFilter !== "all") {
         results = results.filter(
           (emp) =>
@@ -50,7 +56,6 @@ export default function AdminDashboard() {
         );
       }
 
-      // Sorting
       results = results.sort((a, b) => {
         switch (sortOption) {
           case "name_asc":
@@ -76,9 +81,60 @@ export default function AdminDashboard() {
     return () => clearTimeout(timer);
   }, [employees, searchTerm, sortOption, bloodGroupFilter]);
 
+  const handleAddEmployee = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (
+      !newEmployee.first_name ||
+      !newEmployee.last_name ||
+      !newEmployee.email ||
+      !newEmployee.password
+    ) {
+      alert("Please fill in all fields before submitting.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const payload = {
+        first_name: newEmployee.first_name,
+        last_name: newEmployee.last_name,
+        email: newEmployee.email,
+        password: newEmployee.password,
+        confirm_password: newEmployee.password,
+      };
+
+      const createdEmp = await addEmployee(payload);
+
+      setEmployees((prev) => [
+        ...prev,
+        {
+          id: createdEmp.id,
+          first_name: createdEmp.first_name,
+          last_name: createdEmp.last_name,
+          email: createdEmp.email,
+          role: createdEmp.role,
+        },
+      ]);
+
+      alert(`Employee ${createdEmp.first_name} ${createdEmp.last_name} added successfully!`);
+      setIsAddOpen(false);
+      setNewEmployee({ first_name: "", last_name: "", email: "", password: "" });
+    } catch (err: any) {
+      console.error("Add employee failed:", err);
+      const msg =
+        err.response?.data?.detail ||
+        err.message ||
+        "Failed to add employee. Please try again.";
+      alert(msg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="p-6 sm:p-8 min-h-screen bg-gradient-to-b from-blue-50 to-white">
-      {/* Header */}
+    <div className="p-6 sm:p-8 min-h-screen bg-linear-to-b from-blue-50 to-white">
       <Header
         title="Admin Dashboard"
         subtitle="Manage, search, filter, and sort employees."
@@ -86,7 +142,6 @@ export default function AdminDashboard() {
         onLogout={handleLogout}
       />
 
-      {/* Filter and Sort Bar */}
       <FilterBar
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
@@ -110,7 +165,7 @@ export default function AdminDashboard() {
             {filteredEmployees.length > 0 ? (
               filteredEmployees.map((emp) => (
                 <tr
-                  key={emp.id}
+                  key={emp.email}
                   className="hover:bg-blue-50 cursor-pointer"
                   onClick={() => {
                     setSelectedEmployee(emp);
@@ -152,9 +207,10 @@ export default function AdminDashboard() {
       <AddEmployeeModal
         isOpen={isAddOpen}
         onClose={() => setIsAddOpen(false)}
-        onAdd={() => {}}
-        newEmployee={{}}
-        setNewEmployee={() => {}}
+        onAdd={handleAddEmployee}
+        newEmployee={newEmployee}
+        setNewEmployee={setNewEmployee}
+        loading={loading}
       />
 
       <EmployeeDetailModal
@@ -167,7 +223,9 @@ export default function AdminDashboard() {
         isOpen={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}
         onConfirm={() => {}}
-        employeeName={`${selectedEmployee?.first_name || ""} ${selectedEmployee?.last_name || ""}`}
+        employeeName={`${selectedEmployee?.first_name || ""} ${
+          selectedEmployee?.last_name || ""
+        }`}
       />
     </div>
   );
