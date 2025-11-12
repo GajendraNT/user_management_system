@@ -26,7 +26,6 @@ export default function AdminDashboard() {
     window.location.href = "/login";
   };
 
-  // ✅ Debounced search, filter, and sort logic
   useEffect(() => {
     const timer = setTimeout(() => {
       let results = employees.filter((e) => e.role === "employee");

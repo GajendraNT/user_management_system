@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import Button from "../components/Button";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -13,6 +12,10 @@ export default function LoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    if(!email || !password) {
+      setError("Please fill in all fields");
+      return;
+    }
     try {
       await login(email, password);
       navigate("/dashboard");
@@ -43,6 +46,7 @@ export default function LoginPage() {
             <input
               type="email"
               value={email}
+              placeholder="eg. gajendra@mail.com"
               onChange={(e) => setEmail(e.target.value)}
               className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-400 outline-none"
             />
@@ -53,6 +57,7 @@ export default function LoginPage() {
             <input
               type="password"
               value={password}
+              placeholder="************"
               onChange={(e) => setPassword(e.target.value)}
               className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-400 outline-none"
             />
@@ -60,9 +65,9 @@ export default function LoginPage() {
 
           {error && <p className="text-red-500 text-sm text-center">{error}</p>}
 
-          <Button type="submit" className="w-full" variant="primary">
+          <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-300 px-4 py-2 rounded-lg font-semibold transition focus:outline-none focus:ring-2">
             Login
-          </Button>
+          </button>
         </form>
       </div>
     </div>
