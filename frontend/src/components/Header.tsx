@@ -7,7 +7,12 @@ interface HeaderProps {
   onLogout: () => void;
 }
 
-export default function Header({ title, subtitle, onAdd, onLogout }: HeaderProps) {
+export default function Header({
+  title,
+  subtitle,
+  onAdd,
+  onLogout,
+}: HeaderProps) {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
       <div>

@@ -37,9 +37,41 @@ export default function AdminDashboard() {
     null
   );
 
+  const [newEmployee, setNewEmployee] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    password: "",
+  });
+
   const handleLogout = () => {
     localStorage.removeItem("access_token");
     window.location.href = "/login";
+  };
+
+  const handleAddEmployee = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const payload = {
+      ...newEmployee,
+      confirm_password: newEmployee.password,
+    };
+
+    await addNewEmployee(payload);
+
+    setIsAddOpen(false);
+    setNewEmployee({
+      first_name: "",
+      last_name: "",
+      email: "",
+      password: "",
+    });
+  };
+
+  const handleDeleteEmployee = async () => {
+    if (!selectedEmployee) return;
+    await deleteOneEmployee(selectedEmployee.id);
+    setIsDeleteOpen(false);
   };
 
   return (
@@ -67,8 +99,8 @@ export default function AdminDashboard() {
           <EmployeeTable
             employees={employees}
             onSelect={(emp) => {
-              setIsDetailOpen(true);
               setSelectedEmployee(emp);
+              setIsDetailOpen(true);
             }}
             onDelete={(emp) => {
               setSelectedEmployee(emp);
@@ -97,9 +129,9 @@ export default function AdminDashboard() {
       <AddEmployeeModal
         isOpen={isAddOpen}
         onClose={() => setIsAddOpen(false)}
-        onAdd={addNewEmployee}
-        newEmployee={{}}
-        setNewEmployee={() => {}}
+        onAdd={handleAddEmployee}
+        newEmployee={newEmployee}
+        setNewEmployee={setNewEmployee}
         loading={false}
       />
 
@@ -112,7 +144,7 @@ export default function AdminDashboard() {
       <DeleteEmployeeModal
         isOpen={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}
-        onConfirm={() => deleteOneEmployee(selectedEmployee?.id || 0)}
+        onConfirm={handleDeleteEmployee}
         employeeName={
           selectedEmployee
             ? `${selectedEmployee.first_name} ${selectedEmployee.last_name}`
