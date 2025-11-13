@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Button from "../components/Button";
 import { getCurrentUser } from "../services/auth";
+import type { Employee } from "../types";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -21,7 +22,8 @@ export default function LoginPage() {
     }
 
     try {
-      const user = await login(email, password);
+      await login(email, password);
+      const user: Employee = await getCurrentUser();
 
       if (user?.role === "admin") {
         navigate("/admin/dashboard");

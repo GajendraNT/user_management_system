@@ -26,6 +26,10 @@ export default function EmployeeDashboard() {
   };
 
   useEffect(() => {
+    document.title = "Employee Dashboard - User Management System";
+  }, []);
+
+  useEffect(() => {
     const fetchEmployee = async () => {
       try {
         const data = await getCurrentUser();
@@ -124,18 +128,18 @@ export default function EmployeeDashboard() {
             hover:shadow-2xl
           "
         >
-          {/* Conditional Button */}
-          <Button
-            className="px-4 py-2 text-sm font-semibold"
-            variant={isProfileComplete ? "primary" : "secondary"}
-            onClick={handleEditClick}
-          >
-            {isProfileComplete ? "Edit Details" : "Fill Details"}
-          </Button>
-
-          <h2 className="text-xl sm:text-2xl font-bold text-blue-700 mb-6 text-center">
-            Profile Information
-          </h2>
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl sm:text-2xl font-bold text-blue-700 text-center">
+              Profile Information
+            </h2>
+            <Button
+              className="px-4 py-2 text-sm font-semibold"
+              variant={isProfileComplete ? "primary" : "secondary"}
+              onClick={handleEditClick}
+            >
+              {isProfileComplete ? "Edit Details" : "Fill Details"}
+            </Button>
+          </div>
 
           <div className="space-y-4 text-gray-700 text-sm sm:text-base leading-relaxed">
             <p>

@@ -12,7 +12,6 @@ function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          {/* Public Route */}
           <Route path="/login" element={<LoginPage />} />
 
           {/* Admin Protected Route */}
@@ -35,7 +34,6 @@ function App() {
             }
           />
 
-          {/* Default Redirect */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

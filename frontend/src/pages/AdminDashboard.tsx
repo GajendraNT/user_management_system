@@ -35,6 +35,10 @@ export default function AdminDashboard() {
     null
   );
 
+  useEffect(() => {
+    document.title = "Admin Dashboard - User Management System";
+  }, []);
+
   const handleLogout = () => {
     localStorage.removeItem("access_token");
     window.location.href = "/login";
@@ -78,7 +82,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     const delay = setTimeout(() => {
       fetchEmployees();
-    }, 500); 
+    }, 500);
     return () => clearTimeout(delay);
   }, [page, searchTerm, sortOption]);
 
