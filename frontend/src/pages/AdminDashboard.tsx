@@ -196,7 +196,14 @@ export default function AdminDashboard() {
             </thead>
             <tbody>
               {employees.map((emp) => (
-                <tr key={emp.id} className="hover:bg-blue-50">
+                <tr
+                  onClick={() => {
+                    setIsDetailOpen(true);
+                    setSelectedEmployee(emp);
+                  }}
+                  key={emp.id}
+                  className="hover:bg-blue-50 cursor-pointer"
+                >
                   <td className="p-3 border-b">
                     {emp.first_name} {emp.last_name}
                   </td>
@@ -204,7 +211,8 @@ export default function AdminDashboard() {
                   <td className="p-3 border-b text-center">
                     <button
                       className="text-red-600 hover:text-red-800"
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation();
                         setSelectedEmployee(emp);
                         setIsDeleteOpen(true);
                       }}
