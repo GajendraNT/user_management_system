@@ -1,72 +1,9 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
 import Button from "../components/Button";
-import { getCurrentUser } from "../services/auth";
-import type { Employee } from "../types";
+import { useLogin } from "../hooks/useLogin";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const { login } = useAuth();
-  const navigate = useNavigate();
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-
-    if (!email || !password) {
-      setError("Please fill in all fields");
-      return;
-    }
-
-    try {
-      await login(email, password);
-      const user: Employee = await getCurrentUser();
-
-      if (user.first_login) {
-        navigate("/setup-password");
-      } else {
-        navigate(
-          user.role === "admin" ? "/admin/dashboard" : "/employee/dashboard"
-        );
-      }
-    } catch (err: any) {
-      setError("Invalid credentials");
-      navigate("/login");
-    }
-  };
-
-  useEffect(() => {
-    document.title = "Login - User Management System";
-  }, []);
-
-  useEffect(() => {
-    const token = localStorage.getItem("access_token");
-
-    async function getUser() {
-      try {
-        const user = await getCurrentUser();
-        if (user.role === "admin") {
-          navigate("/admin/dashboard");
-        } else if (user.role === "employee") {
-          navigate("/employee/dashboard");
-        } else {
-          throw new Error("Invalid user role");
-        }
-      } catch (error: any) {
-        console.log("No valid session found");
-        localStorage.removeItem("access_token");
-        alert(error.message);
-        navigate("/login");
-      }
-    }
-
-    if (token) {
-      getUser();
-    }
-  }, []);
+  const { email, password, error, setEmail, setPassword, handleSubmit } =
+    useLogin();
 
   return (
     <div className="flex items-center justify-center h-screen bg-linear-to-br from-blue-50 to-white">
@@ -75,7 +12,8 @@ export default function LoginPage() {
           Login
         </h1>
 
-        <form onSubmit={handleLogin} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Email */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Email
@@ -89,6 +27,7 @@ export default function LoginPage() {
             />
           </div>
 
+          {/* Password */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Password
@@ -102,8 +41,10 @@ export default function LoginPage() {
             />
           </div>
 
+          {/* Error */}
           {error && <p className="text-red-500 text-sm text-center">{error}</p>}
 
+          {/* Login Button */}
           <Button type="submit" className="w-full">
             Login
           </Button>
