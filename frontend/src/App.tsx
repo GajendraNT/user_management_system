@@ -3,8 +3,9 @@ import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import LoginPage from "./pages/LoginPage";
 import AdminDashboard from "./pages/AdminDashboard";
-import EmployeeDashboard from "./pages/EmployeeDashboard"; 
+import EmployeeDashboard from "./pages/EmployeeDashboard";
 import "./index.css";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
@@ -35,7 +36,7 @@ function App() {
           />
 
           {/* Default Redirect */}
-          <Route path="*" element={<Navigate to="/login" />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
