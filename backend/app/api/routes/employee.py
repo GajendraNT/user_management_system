@@ -10,10 +10,8 @@ router = APIRouter()
 def health_check():
     return {"status": "ok"}
 
-@router.post("/setup-profile", response_model=UserResponse)
+@router.put("/setup-profile", response_model=UserResponse)
 def setup_profile(data: EmployeeProfileUpdate, db: Session = Depends(get_db), user=Depends(get_current_user)):
-    if not user.first_login:
-        raise HTTPException(status_code=400, detail="Profile already setup")
     updated_user = user_crud.update_employee_profile(db, user, data.phone, data.address, data.blood_group)
     return updated_user
 

@@ -56,13 +56,6 @@ def list_employees(
         "total_count": total_count,
     }
 
-@router.get("/employees/{user_id}", response_model=UserResponse)
-def get_employee(user_id: int, db: Session = Depends(get_db), admin=Depends(get_current_admin)):
-    emp = user_crud.get_user(db, user_id)
-    if not emp:
-        raise HTTPException(status_code=404, detail="Employee not found")
-    return emp
-
 @router.delete("/employees/{user_id}")
 def delete_employee(user_id: int, db: Session = Depends(get_db), admin=Depends(get_current_admin)):
     success = user_crud.delete_user(db, user_id)
