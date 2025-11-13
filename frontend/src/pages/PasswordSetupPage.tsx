@@ -1,76 +1,15 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import { setupPassword } from "../services/auth";
 import Button from "../components/Button";
+import { usePasswordSetup } from "../hooks/usePasswordSetup";
 
 export default function PasswordSetupPage() {
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
-  const { user, setUser } = useAuth();
-
-  useEffect(() => {
-    document.title = "Setup Password - User Management System";
-  }, []);
-
-  useEffect(() => {
-    if (!localStorage.getItem("access_token")) {
-      navigate("/login", { replace: true });
-    }
-    if (user && !user.first_login) {
-      navigate(
-        user.role === "admin" ? "/admin/dashboard" : "/employee/dashboard",
-        { replace: true }
-      );
-    }
-  }, [user, navigate]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-
-    if (!newPassword || !confirmPassword) {
-      setError("All fields are required.");
-      return;
-    }
-    if (newPassword !== confirmPassword) {
-      setError("Passwords do not match.");
-      return;
-    }
-
-    try {
-      // ✅ Call backend API
-      await setupPassword({
-        new_password: newPassword,
-        confirm_password: confirmPassword,
-      });
-
-      // ✅ Safely update context (ensure user isn’t null)
-      if (user) {
-        const updatedUser = { ...user, first_login: false };
-        setUser(updatedUser);
-
-        // ✅ Use updatedUser instead of user (ensures correct role)
-        navigate(
-          updatedUser.role === "admin"
-            ? "/admin/dashboard"
-            : "/employee/dashboard",
-          { replace: true }
-        );
-      } else {
-        // Edge case: user might be null in rare cases (fresh reload)
-        // fallback to manual redirect based on token
-        navigate("/login", { replace: true });
-      }
-    } catch (err: any) {
-      console.error("Password setup failed:", err);
-      setError(
-        err.response?.data?.detail || "Failed to setup password. Try again."
-      );
-    }
-  };
+  const {
+    newPassword,
+    confirmPassword,
+    error,
+    setNewPassword,
+    setConfirmPassword,
+    handleSubmit,
+  } = usePasswordSetup();
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-linear-to-br from-blue-50 to-white">

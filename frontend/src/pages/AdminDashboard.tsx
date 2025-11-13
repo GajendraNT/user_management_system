@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useEmployees } from "../hooks/useEmployees";
 import Header from "../components/Header";
 import FilterBar from "../components/FilterBar";
 import LoaderOverlay from "../components/LoaderOverlay";
@@ -9,6 +8,7 @@ import Pagination from "../components/Pagination";
 import AddEmployeeModal from "../components/Admin/EmployeeModals/AddEmployeeModal";
 import EmployeeDetailModal from "../components/Admin/EmployeeModals/EmployeeDetailModal";
 import DeleteEmployeeModal from "../components/Admin/EmployeeModals/DeleteEmployeeModal";
+import { useEmployees } from "../hooks/useEmployees";
 
 export default function AdminDashboard() {
   const {
