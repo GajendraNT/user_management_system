@@ -5,14 +5,16 @@ interface User {
   id: number;
   email: string;
   role: "admin" | "employee";
+  first_login: boolean;
 }
 
 interface AuthContextType {
   user: User | null;
   token: string | null;
-  login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
   loading: boolean;
+  login: (email: string, password: string) => Promise<User>;
+  logout: () => void;
+  setUser: (user: User | null) => void; // ✅ expose this
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -28,16 +30,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     const fetchUser = async () => {
-      if (token) {
-        try {
-          const data = await getCurrentUser();
-          setUser(data);
-        } catch {
-          logout();
-        }
+      if (!token) {
+        setUser(null);
+        setLoading(false);
+        return;
       }
-      setLoading(false);
+
+      try {
+        const data = await getCurrentUser();
+        setUser(data);
+      } catch (err) {
+        console.error("AuthContext: Failed to fetch user", err);
+        logout();
+      } finally {
+        setLoading(false);
+      }
     };
+
     fetchUser();
   }, [token]);
 
@@ -56,7 +65,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, loading }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        token,
+        loading,
+        login,
+        logout,
+        setUser,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

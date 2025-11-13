@@ -1,11 +1,12 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import LoginPage from "./pages/LoginPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import EmployeeDashboard from "./pages/EmployeeDashboard";
-import "./index.css";
 import NotFound from "./pages/NotFound";
+import "./index.css";
+import PasswordSetupPage from "./pages/PasswordSetupPage";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/setup-password" element={<PasswordSetupPage />} />
 
           {/* Admin Protected Route */}
           <Route

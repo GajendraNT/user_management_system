@@ -6,6 +6,7 @@ export interface Employee {
   phone?: string;
   address?: string;
   blood_group?: string;
+  first_login: boolean;
   role: "admin" | "employee";
 }
 

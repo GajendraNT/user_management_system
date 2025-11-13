@@ -37,3 +37,7 @@ class EmployeeProfileUpdate(BaseModel):
     phone: str
     address: str
     blood_group: str
+
+class PasswordSetupRequest(BaseModel):
+    new_password: str = Field(..., min_length=6)
+    confirm_password: str = Field(..., min_length=6)

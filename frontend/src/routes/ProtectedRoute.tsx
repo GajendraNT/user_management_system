@@ -14,6 +14,10 @@ export default function ProtectedRoute({ children, role }: Props) {
 
   if (!user) return <Navigate to="/login" replace />;
 
+  if (user.first_login) {
+    return <Navigate to="/setup-password" replace />;
+  }
+
   if (role && user.role !== role) return <Navigate to="/" replace />;
 
   return children;

@@ -1,4 +1,3 @@
-// src/services/auth.ts
 import api from "./api";
 
 interface LoginPayload {
@@ -12,6 +11,14 @@ export const login = async (payload: LoginPayload) => {
 };
 
 export const getCurrentUser = async () => {
-  const { data } = await api.get("/auth/users/me",);
+  const { data } = await api.get("/auth/users/me");
   return data;
+};
+
+export const setupPassword = async (data: {
+  new_password: string;
+  confirm_password: string;
+}) => {
+  const response = await api.put("/auth/setup-password", data);
+  return response.data;
 };

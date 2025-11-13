@@ -25,15 +25,16 @@ export default function LoginPage() {
       await login(email, password);
       const user: Employee = await getCurrentUser();
 
-      if (user?.role === "admin") {
-        navigate("/admin/dashboard");
-      } else if (user?.role === "employee") {
-        navigate("/employee/dashboard");
+      if (user.first_login) {
+        navigate("/setup-password");
       } else {
-        navigate("/login");
+        navigate(
+          user.role === "admin" ? "/admin/dashboard" : "/employee/dashboard"
+        );
       }
     } catch (err: any) {
       setError("Invalid credentials");
+      navigate("/login");
     }
   };
 
