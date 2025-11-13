@@ -1,5 +1,5 @@
-import Button from "../Button";
-import Modal from "../Modal";
+import Button from "../../Button";
+import Modal from "../../Modal";
 
 interface DeleteEmployeeModalProps {
   isOpen: boolean;

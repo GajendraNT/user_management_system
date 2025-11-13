@@ -1,6 +1,6 @@
-import Button from "../Button";
-import Modal from "../Modal";
-import type { Employee } from "../../types";
+import Button from "../../Button";
+import Modal from "../../Modal";
+import type { Employee } from "../../../types";
 
 interface EmployeeDetailModalProps {
   isOpen: boolean;
