@@ -19,7 +19,10 @@ def add_employee(user: UserCreate, db: Session = Depends(get_db), admin=Depends(
     existing_user = user_crud.get_user_by_email(db, user.email)
     if existing_user:
         raise HTTPException(status_code=400, detail="Email already exists")
-    db_user = user_crud.create_user(db, user, role=UserRole.employee)
+    
+    selected_role = UserRole.admin if user.is_admin else UserRole.employee
+
+    db_user = user_crud.create_user(db, user, role=selected_role)
     return db_user
 
 @router.get("/employees")

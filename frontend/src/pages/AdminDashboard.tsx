@@ -43,6 +43,7 @@ export default function AdminDashboard() {
     last_name: "",
     email: "",
     password: "",
+    confirm_password: "",
   });
 
   useEffect(() => {
@@ -56,12 +57,23 @@ export default function AdminDashboard() {
 
   const handleAddEmployee = async (e: React.FormEvent) => {
     e.preventDefault();
-    const payload = { ...newEmployee, confirm_password: newEmployee.password };
+    const payload = { ...newEmployee };
+
+    if (payload.password !== payload.confirm_password) {
+      alert("Password and Confirm Password do not match.");
+      return;
+    }
 
     await addNewEmployee(payload);
 
     setIsAddOpen(false);
-    setNewEmployee({ first_name: "", last_name: "", email: "", password: "" });
+    setNewEmployee({
+      first_name: "",
+      last_name: "",
+      email: "",
+      password: "",
+      confirm_password: "",
+    });
   };
 
   const handleDeleteEmployee = async () => {

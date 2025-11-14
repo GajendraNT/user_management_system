@@ -15,6 +15,7 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     password: str = Field(..., min_length=6)
     confirm_password: str = Field(..., min_length=6)
+    is_admin: bool = False
 
 class UserResponse(UserBase):
     id: int
