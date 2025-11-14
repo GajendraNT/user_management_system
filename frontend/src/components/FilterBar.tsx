@@ -14,10 +14,10 @@ export default function FilterBar({
   onSearchChange,
   sortOption,
   onSortChange,
-  bloodGroupFilter,
-  onBloodGroupChange,
-}: FilterBarProps) {
-  const bloodGroups = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
+}: // bloodGroupFilter,
+// onBloodGroupChange,
+FilterBarProps) {
+  // const bloodGroups = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
 
   return (
     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-6">
@@ -25,16 +25,16 @@ export default function FilterBar({
       <input
         type="text"
         placeholder="Search by name, email, or blood group..."
-        className="flex-1 border border-gray-300 rounded-lg p-3 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+        className="flex-1 border border-gray-300 rounded-lg p-3 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-400"
         value={searchTerm}
         onChange={(e) => onSearchChange(e.target.value)}
       />
 
       {/* Filter */}
-      <select
+      {/* <select
         value={bloodGroupFilter}
         onChange={(e) => onBloodGroupChange(e.target.value)}
-        className="border border-gray-300 rounded-lg p-3 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+        className="border border-gray-300 rounded-lg p-3 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-400"
       >
         <option value="all">All Blood Groups</option>
         {bloodGroups.map((group) => (
@@ -42,20 +42,20 @@ export default function FilterBar({
             {group}
           </option>
         ))}
-      </select>
+      </select> */}
 
       {/* Sort */}
       <select
         value={sortOption}
         onChange={(e) => onSortChange(e.target.value as SortOption)}
-        className="border border-gray-300 rounded-lg p-3 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+        className="border border-gray-300 rounded-lg p-3 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-400"
       >
-        <option value="name_asc">Sort by Name (A–Z)</option>
-        <option value="name_desc">Sort by Name (Z–A)</option>
-        <option value="email_asc">Sort by Email (A–Z)</option>
-        <option value="email_desc">Sort by Email (Z–A)</option>
-        <option value="blood_asc">Sort by Blood Group (A–Z)</option>
-        <option value="blood_desc">Sort by Blood Group (Z–A)</option>
+        <option value="name_asc">Sort by Name (A-Z)</option>
+        <option value="name_desc">Sort by Name (Z-A)</option>
+        <option value="email_asc">Sort by Email (A-Z)</option>
+        <option value="email_desc">Sort by Email (Z-A)</option>
+        <option value="blood_asc">Sort by Blood Group (A-Z)</option>
+        <option value="blood_desc">Sort by Blood Group (Z-A)</option>
       </select>
     </div>
   );

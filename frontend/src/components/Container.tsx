@@ -12,14 +12,13 @@ export default function Container({
   return (
     <div
       className={`
-        w-full 
-        px-0 
-        sm:px-4 
-        md:px-10 
-        lg:px-[10%] 
-        xl:px-[15%] 
-        2xl:px-[18%] 
-        flex items-center justify-center h-screen bg-linear-to-br from-teal-200 to-white
+        w-full
+        mx-auto
+        px-4
+        sm:px-6
+        lg:px-12
+        xl:px-20 
+        2xl:px-32 
         ${className}
       `}
     >

@@ -10,7 +10,7 @@ export default function LoginPage() {
     useLogin();
 
   return (
-    <Container>
+    <Container className="flex items-center justify-center h-screen bg-linear-to-br from-teal-200 to-white">
       <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold text-teal-700 mb-6 text-center">
           Login

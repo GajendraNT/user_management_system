@@ -19,7 +19,7 @@ export default function Button({
       "bg-teal-600/80 hover:bg-teal-700/80 text-white focus:ring-teal-600/90 hover:shadow-lg",
     secondary:
       "border border-gray-300 text-gray-600 hover:bg-gray-100 focus:ring-gray-300",
-    danger: "bg-red-600 hover:bg-red-700 text-white focus:ring-red-300",
+    danger: "bg-red-500 hover:bg-red-600 text-white focus:ring-red-300 py-2.5",
   };
   return (
     <button className={`${base} ${className} ${variants[variant]}`} {...props}>

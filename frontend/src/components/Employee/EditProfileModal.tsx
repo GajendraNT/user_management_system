@@ -49,7 +49,7 @@ export default function EditProfileModal({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} width="max-w-md">
-      <h2 className="text-lg sm:text-xl font-semibold text-blue-700 mb-4 text-center">
+      <h2 className="text-lg sm:text-xl font-semibold text-teal-700 mb-4 text-center">
         Edit Your Details
       </h2>
 
@@ -68,7 +68,7 @@ export default function EditProfileModal({
                 phone: e.target.value.replace(/\D/g, "").slice(0, 10),
               })
             }
-            className="w-full border p-2 rounded-lg focus:ring-2 focus:ring-blue-400"
+            className="w-full border p-2 rounded-lg focus:ring-2 focus:ring-teal-400"
             placeholder="10-digit phone"
           />
         </div>
@@ -81,7 +81,7 @@ export default function EditProfileModal({
             onChange={(e) =>
               setFormData({ ...formData, address: e.target.value })
             }
-            className="w-full border p-2 rounded-lg focus:ring-2 focus:ring-blue-400"
+            className="w-full border p-2 rounded-lg focus:ring-2 focus:ring-teal-400"
             placeholder="Enter address"
           />
         </div>
@@ -93,7 +93,7 @@ export default function EditProfileModal({
             onChange={(e) =>
               setFormData({ ...formData, blood_group: e.target.value })
             }
-            className="w-full border p-2 rounded-lg focus:ring-2 focus:ring-blue-400"
+            className="w-full border p-2 rounded-lg focus:ring-2 focus:ring-teal-400"
           >
             <option value="">Select</option>
             {["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"].map((g) => (

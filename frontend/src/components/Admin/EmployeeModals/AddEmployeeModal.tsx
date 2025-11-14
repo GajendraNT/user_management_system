@@ -49,7 +49,7 @@ export default function AddEmployeeModal({
 }: AddEmployeeModalProps) {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <h2 className="text-xl font-bold text-blue-700 mb-4">Add New Employee</h2>
+      <h2 className="text-xl font-bold text-teal-700 mb-4">Add New Employee</h2>
       <form onSubmit={onAdd} className="space-y-4">
         {newEmpInput.map((field) => (
           <div key={field.valueKey}>
@@ -58,7 +58,7 @@ export default function AddEmployeeModal({
             </label>
             <input
               type={field.type}
-              className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-teal-400"
               value={(newEmployee as any)[field.valueKey] || ""}
               placeholder={field.placeholder}
               onChange={(e) =>

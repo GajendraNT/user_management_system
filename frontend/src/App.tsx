@@ -10,36 +10,38 @@ import PasswordSetupPage from "./pages/PasswordSetupPage";
 
 function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/setup-password" element={<PasswordSetupPage />} />
+    <>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/setup-password" element={<PasswordSetupPage />} />
 
-          {/* Admin Protected Route */}
-          <Route
-            path="/admin/dashboard"
-            element={
-              <ProtectedRoute role="admin">
-                <AdminDashboard />
-              </ProtectedRoute>
-            }
-          />
+            {/* Admin Protected Route */}
+            <Route
+              path="/admin/dashboard"
+              element={
+                <ProtectedRoute role="admin">
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
 
-          {/* Employee Protected Route */}
-          <Route
-            path="/employee/dashboard"
-            element={
-              <ProtectedRoute role="employee">
-                <EmployeeDashboard />
-              </ProtectedRoute>
-            }
-          />
+            {/* Employee Protected Route */}
+            <Route
+              path="/employee/dashboard"
+              element={
+                <ProtectedRoute role="employee">
+                  <EmployeeDashboard />
+                </ProtectedRoute>
+              }
+            />
 
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </>
   );
 }
 

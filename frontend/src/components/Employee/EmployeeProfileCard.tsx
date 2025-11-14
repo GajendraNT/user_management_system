@@ -14,9 +14,9 @@ export default function ProfileCard({
 }: ProfileCardProps) {
   return (
     <div className="flex justify-center mt-10">
-      <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 w-full max-w-lg relative border border-blue-100 hover:shadow-2xl transition duration-300">
+      <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 w-full max-w-lg relative border border-teal-100 hover:shadow-2xl transition duration-300">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl sm:text-2xl font-bold text-blue-700">
+          <h2 className="text-xl sm:text-2xl font-bold text-teal-700">
             Profile Information
           </h2>
 

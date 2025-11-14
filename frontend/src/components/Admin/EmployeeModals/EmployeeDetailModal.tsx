@@ -17,7 +17,7 @@ export default function EmployeeDetailModal({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <h2 className="text-2xl font-bold text-blue-700 mb-4">
+      <h2 className="text-2xl font-bold text-teal-700 mb-4">
         Employee Details
       </h2>
       <div className="space-y-2 text-gray-700 text-sm sm:text-base leading-relaxed">
