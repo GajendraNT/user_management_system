@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Modal from "../../components/Modal";
 import Button from "../../components/Button";
+import InputField from "../Input";
 
 interface EditProfileModalProps {
   isOpen: boolean;
@@ -56,35 +57,29 @@ export default function EditProfileModal({
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && <p className="text-red-500 text-center">{error}</p>}
 
-        <div>
-          <label className="block text-sm font-medium mb-1">Phone</label>
-          <input
-            type="text"
-            maxLength={10}
-            value={formData.phone}
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                phone: e.target.value.replace(/\D/g, "").slice(0, 10),
-              })
-            }
-            className="w-full border p-2 rounded-lg focus:ring-2 focus:ring-teal-400"
-            placeholder="10-digit phone"
-          />
-        </div>
+        <InputField
+          label="Phone"
+          type="text"
+          maxLength={10}
+          value={formData.phone}
+          onChange={(e) =>
+            setFormData({
+              ...formData,
+              phone: e.target.value.replace(/\D/g, "").slice(0, 10),
+            })
+          }
+          placeholder="10-digit phone"
+        />
 
-        <div>
-          <label className="block text-sm font-medium mb-1">Address</label>
-          <input
-            type="text"
-            value={formData.address}
-            onChange={(e) =>
-              setFormData({ ...formData, address: e.target.value })
-            }
-            className="w-full border p-2 rounded-lg focus:ring-2 focus:ring-teal-400"
-            placeholder="Enter address"
-          />
-        </div>
+        <InputField
+          label="Address"
+          type="text"
+          value={formData.address}
+          onChange={(e) =>
+            setFormData({ ...formData, address: e.target.value })
+          }
+          placeholder="Enter address"
+        />
 
         <div>
           <label className="block text-sm font-medium mb-1">Blood Group</label>

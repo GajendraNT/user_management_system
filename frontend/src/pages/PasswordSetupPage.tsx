@@ -1,4 +1,5 @@
 import Button from "../components/Button";
+import InputField from "../components/Input";
 import { usePasswordSetup } from "../hooks/usePasswordSetup";
 
 export default function PasswordSetupPage() {
@@ -19,31 +20,21 @@ export default function PasswordSetupPage() {
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">
-              New Password
-            </label>
-            <input
-              type="password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-teal-400"
-              placeholder="Enter new password"
-            />
-          </div>
+          <InputField
+            label="New Password"
+            type="password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            placeholder="Enter new password"
+          />
 
-          <div>
-            <label className="block text-sm font-medium mb-1">
-              Confirm Password
-            </label>
-            <input
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-teal-400"
-              placeholder="Confirm new password"
-            />
-          </div>
+          <InputField
+            label="Confirm Password"
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            placeholder="Enter new password"
+          />
 
           {error && <p className="text-red-500 text-sm text-center">{error}</p>}
 
