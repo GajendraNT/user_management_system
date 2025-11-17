@@ -5,11 +5,7 @@ from app.api.routes import auth, admin, employee
 
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(
-    title="User Management System",
-    version="1.0.0",
-    description="A simple user management system with Admin and Employee roles."
-)
+app = FastAPI(title="User Management System")
 
 app.add_middleware(
     CORSMiddleware,
