@@ -34,6 +34,7 @@ export default function AdminDashboard() {
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [error, setError] = useState("");
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(
     null
   );
@@ -57,14 +58,29 @@ export default function AdminDashboard() {
 
   const handleAddEmployee = async (e: React.FormEvent) => {
     e.preventDefault();
-    const payload = { ...newEmployee };
 
-    if (payload.password !== payload.confirm_password) {
-      alert("Password and Confirm Password do not match.");
+    if (
+      !newEmployee.first_name ||
+      !newEmployee.last_name ||
+      !newEmployee.email ||
+      !newEmployee.password ||
+      !newEmployee.confirm_password
+    ) {
+      setError("Please fill in all fields.");
       return;
     }
 
-    await addNewEmployee(payload);
+    if (newEmployee.password !== newEmployee.confirm_password) {
+      setError("Password and Confirm Password do not match.");
+      return;
+    }
+
+    if (newEmployee.password.length < 6) {
+      setError("Password must be at least 6 characters long.");
+      return;
+    }
+
+    await addNewEmployee(newEmployee);
 
     setIsAddOpen(false);
     setNewEmployee({
@@ -137,6 +153,8 @@ export default function AdminDashboard() {
           )}
 
           <AddEmployeeModal
+            error={error}
+            setError={setError}
             isOpen={isAddOpen}
             onClose={() => setIsAddOpen(false)}
             onAdd={handleAddEmployee}

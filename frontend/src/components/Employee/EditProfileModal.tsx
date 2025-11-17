@@ -55,7 +55,6 @@ export default function EditProfileModal({
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        {error && <p className="text-red-500 text-center">{error}</p>}
 
         <InputField
           label="Phone"

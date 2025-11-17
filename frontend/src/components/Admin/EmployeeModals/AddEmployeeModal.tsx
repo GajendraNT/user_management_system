@@ -11,6 +11,7 @@ interface AddEmployeeModalProps {
   setNewEmployee: (data: any) => void;
   loading: boolean;
   error?: string;
+  setError: (msg: string) => void;
 }
 
 const newEmpInput = [
@@ -47,6 +48,8 @@ const newEmpInput = [
 ];
 
 export default function AddEmployeeModal({
+  error,
+  setError,
   isOpen,
   onClose,
   onAdd,
@@ -59,6 +62,8 @@ export default function AddEmployeeModal({
       <h2 className="text-xl font-bold text-teal-700 mb-4">Add New Employee</h2>
 
       <form onSubmit={onAdd} className="space-y-4">
+        {error && <p className="text-red-500 text-center">{error}</p>}
+
         {newEmpInput.map((field) => (
           <InputField
             key={field.valueKey}
@@ -66,12 +71,13 @@ export default function AddEmployeeModal({
             type={field.type}
             value={(newEmployee as any)[field.valueKey] || ""}
             placeholder={field.placeholder}
-            onChange={(e) =>
+            onChange={(e) => {
               setNewEmployee({
                 ...newEmployee,
                 [field.valueKey]: e.target.value,
-              })
-            }
+              });
+              setError("");
+            }}
             disabled={loading}
           />
         ))}

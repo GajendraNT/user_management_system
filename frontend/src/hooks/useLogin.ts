@@ -12,13 +12,17 @@ export function useLogin() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  // Handle login submit
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
     if (!email || !password) {
       setError("Please fill in all fields.");
+      return;
+    }
+
+    if(password.length < 6) {
+      setError("Password must be at least 6 characters long.");
       return;
     }
 
@@ -40,7 +44,6 @@ export function useLogin() {
     }
   };
 
-  // Auto-redirect if already logged in
   useEffect(() => {
     const token = localStorage.getItem("access_token");
     if (!token) return;

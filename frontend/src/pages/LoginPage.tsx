@@ -4,10 +4,15 @@ import { useLogin } from "../hooks/useLogin";
 import IMAGE from "../assets/Login.jpg";
 import Container from "../components/Container";
 import InputField from "../components/Input";
+import { useEffect } from "react";
 
 export default function LoginPage() {
   const { email, password, error, setEmail, setPassword, handleSubmit } =
     useLogin();
+
+  useEffect(() => {
+    document.title = "Login - User Management System";
+  }, []);
 
   return (
     <Container className="flex items-center justify-center h-screen bg-linear-to-br from-teal-200 to-white">
@@ -44,12 +49,10 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
             />
 
-            {/* Error */}
             {error && (
               <p className="text-red-500 text-sm text-center">{error}</p>
             )}
 
-            {/* Login Button */}
             <Button type="submit" className="w-full">
               Login
             </Button>

@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import LoginPage from "./pages/LoginPage";
@@ -14,9 +14,9 @@ function App() {
       <AuthProvider>
         <BrowserRouter>
           <Routes>
+            <Route path="/" element={<Navigate to="/login" replace />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/setup-password" element={<PasswordSetupPage />} />
-
             {/* Admin Protected Route */}
             <Route
               path="/admin/dashboard"
@@ -26,7 +26,6 @@ function App() {
                 </ProtectedRoute>
               }
             />
-
             {/* Employee Protected Route */}
             <Route
               path="/employee/dashboard"
@@ -36,7 +35,6 @@ function App() {
                 </ProtectedRoute>
               }
             />
-
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
